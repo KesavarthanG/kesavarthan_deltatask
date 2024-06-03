@@ -55,6 +55,7 @@ function pauseTimer() {
     removeEventListenersForPlayer(currentPlayer);
     const gr=document.querySelectorAll('.highlight');
    
+   
     if(gr){
         console.log("confirm");
         gr.forEach(sq=>
@@ -79,6 +80,7 @@ function pauseTimer() {
     clearInterval(timerInterval);
     isPaused = true;
     remainingTime = currentPlayer === 'blue' ? blueTime : redTime;
+    updateUI(); 
 }
 
 function resumeTimer() {
@@ -87,6 +89,7 @@ function resumeTimer() {
         currentPlayer === 'blue' ? blueTime = remainingTime : redTime = remainingTime;
         startTimer();
         isPaused = false;
+        updateUI(); 
     }
 }/*
 */
@@ -115,14 +118,28 @@ playButton.addEventListener('click', function() {
     startTimer();
     addEventListenersForPlayer(currentPlayer);
 });
-pauseButton.addEventListener('click', pauseTimer);
-resumeButton.addEventListener('click', resumeTimer);
+const pauseButton = document.getElementById('pauseButton');
+
 function resetGame() {
     location.reload();
 }
 let resetButton = document.getElementById('resetButton');
 resetButton.addEventListener('click', resetGame);
-
+function updateUI() {
+    if (isPaused) {
+        pauseButton.textContent = 'Resume'; 
+    } else {
+        pauseButton.textContent = 'Pause'; 
+    }
+}
+pauseButton.addEventListener('click', function() {
+    if (isPaused) {
+        resumeTimer(); 
+    } else {
+        pauseTimer(); 
+    }
+});
+updateUI();
 
 
 let i=0;
@@ -136,7 +153,8 @@ document.querySelector('.board').innerHTML=text;
 document.querySelector('.mo').innerHTML=`<button class="leftButton button-dir">LEFT</button>
 <button class="rightButton button-dir">RIGHT</button>`;
 firstrow_canonindex=Math.floor(Math.random()*8);
-lastrow_canonindex=Math.floor(Math.random()*8)+56;
+lastrow_canonindex=firstrow_canonindex+56;
+/*lastrow_canonindex=Math.floor(Math.random()*8)+56;*/
 let canon_red=document.querySelector('.'+`sq${firstrow_canonindex}`);
 let canon_blue=document.querySelector('.'+`sq${lastrow_canonindex}`);
 canon_red.classList.add('canon');
@@ -274,9 +292,21 @@ do {
     tankOpponentIndex = Math.floor(Math.random() * 32); // 0-31
 } while (tankOpponentIndex === firstrow_canonindex|| tankOpponentIndex === lastrow_canonindex);
 
-do {
+/*do {
     tankmySideIndex = Math.floor(Math.random() * 32) + 32; // 32-63
-} while (tankmySideIndex === firstrow_canonindex || tankmySideIndex === lastrow_canonindex);
+    } while (tankmySideIndex === firstrow_canonindex || tankmySideIndex === lastrow_canonindex);*/
+    if((Math.floor(tankOpponentIndex/8)*8)===0){
+        tankmySideIndex=tankOpponentIndex+56;   
+    }
+    else if((Math.floor(tankOpponentIndex/8)*8)===8){
+     tankmySideIndex=tankOpponentIndex+40;   
+    }
+    else if((Math.floor(tankOpponentIndex/8)*8)===16){
+        tankmySideIndex=tankOpponentIndex+24;   
+    }
+    else if((Math.floor(tankOpponentIndex/8)*8)===24){
+        tankmySideIndex=tankOpponentIndex+8;   
+    }
 
 // Select the squares for Tanks
 let tankOpponent = document.querySelector('.sq' + tankOpponentIndex);
@@ -412,9 +442,21 @@ let titan_opponent;
 do {
     titan_opponent = Math.floor(Math.random() * 16); // 0-16
 } while (titan_opponent === firstrow_canonindex|| titan_opponent === lastrow_canonindex||titan_opponent%8===lastrow_canonindex%8||titan_opponent===tankOpponentIndex||titan_opponent%8-1===lastrow_canonindex%8||titan_opponent%8+1===lastrow_canonindex%8);
-do {
+/*do {
     titan_myside = Math.floor(Math.random() * 16) + 48; // 48-63
-} while (titan_myside === firstrow_canonindex || titan_myside === lastrow_canonindex||titan_myside%8===firstrow_canonindex%8||titan_myside===tankmySideIndex||titan_myside%8+1===firstrow_canonindex%8||titan_myside%8-1===firstrow_canonindex%8);
+} while (titan_myside === firstrow_canonindex || titan_myside === lastrow_canonindex||titan_myside%8===firstrow_canonindex%8||titan_myside===tankmySideIndex||titan_myside%8+1===firstrow_canonindex%8||titan_myside%8-1===firstrow_canonindex%8);*/
+if((Math.floor(titan_opponent/8)*8)===0){
+    titan_myside=titan_opponent+56;   
+}
+if((Math.floor(titan_opponent/8)*8)===8){
+    titan_myside=titan_opponent+40;   
+}
+else if((Math.floor(titan_opponent/8)*8)===16){
+    titan_myside=titan_opponent+24;   
+}
+else if((Math.floor(titan_opponent/8)*8)===24){
+    titan_myside=titan_opponent+8;   
+}
 let titan_blue = document.querySelector('.sq' + titan_myside);
 let titan_red = document.querySelector('.sq' + titan_opponent);
 titan_blue.classList.add('titan_blue');
@@ -545,19 +587,41 @@ let richotte_red;
 do {
     richotte_red = Math.floor(Math.random() * 24); // 0-23
 } while (richotte_red === firstrow_canonindex|| richotte_red=== lastrow_canonindex||richotte_red===tankOpponentIndex||richotte_red===titan_opponent);
-do {
+if((Math.floor(richotte_red/8)*8)===0){
+    richotte_blue=richotte_red+56;   
+}
+else if((Math.floor(richotte_red/8)*8)===8){
+    richotte_blue=richotte_red+40;   
+}
+else if((Math.floor(richotte_red/8)*8)===16){
+    richotte_blue=richotte_red+24;   
+}
+else if((Math.floor(richotte_red/8)*8)===24){
+    richotte_blue=richotte_red+8;   
+}
+
+
+/*do {
     richotte_blue = Math.floor(Math.random() * 24) + 40; // 40-63
-} while ( richotte_blue === lastrow_canonindex||richotte_blue===tankmySideIndex||richotte_blue===titan_myside);
+} while ( richotte_blue === lastrow_canonindex||richotte_blue===tankmySideIndex||richotte_blue===titan_myside);*/
 let richotte_myside=document.querySelector('.sq'+richotte_blue);
 let richotte_opponent=document.querySelector('.sq'+richotte_red);
-let richotte_myside_image=['richotte_left_blue.png','richotte_right_blue.png'];
+/*let richotte_myside_image=['richotte_left_blue.png','richotte_right_blue.png'];*/
 let richotte_opp_image=['richotte_left.png','richotte_right.png'];
-let richotte_myside_direction = getRandomItemFromArray(richotte_myside_image);
 let richotte_opp_direction = getRandomItemFromArray(richotte_opp_image);
+/*let richotte_myside_direction = getRandomItemFromArray(richotte_myside_image);*/
+if(richotte_opp_direction===richotte_opp_image[0]){
+    richotte_myside.innerHTML=`<img src="richotte_left_blue.png">`;
+    richotte_opponent.innerHTML=`<img src="richotte_left.png">`;
+}
+else{
+    richotte_myside.innerHTML=`<img src="richotte_right_blue.png">`;
+    richotte_opponent.innerHTML=`<img src="richotte_right.png">`;
+}
+
 richotte_myside.classList.add('richo_blue');
-richotte_myside.innerHTML=`<img src="${richotte_myside_direction}">`;
 richotte_opponent.classList.add('richo_red');
-richotte_opponent.innerHTML=`<img src="${richotte_opp_direction}">`;
+
 function rich_red(){
     if(!isPaused){
         check_r=0;
@@ -728,7 +792,7 @@ let test2=0;
 semirichotte_blue();
 semirichotte_red();
 function semirichotte_blue(){
-if(((richotte_blue - 1) !== lastrow_canonindex) && ((richotte_blue - 1)!==titan_myside) && ((richotte_blue - 1)!==tankmySideIndex) && ((richotte_blue)%8!==0)){
+/*if(((richotte_blue - 1) !== lastrow_canonindex) && ((richotte_blue - 1)!==titan_myside) && ((richotte_blue - 1)!==tankmySideIndex) && ((richotte_blue)%8!==0)){
 if(((richotte_blue + 1) !== lastrow_canonindex) && ((richotte_blue + 1) !==titan_myside) && ((richotte_blue + 1) !==tankmySideIndex) && ((richotte_blue+1)%8!==0)){
     test1=1;
      arr=[richotte_blue+1,richotte_blue-1];
@@ -768,7 +832,7 @@ if(((richotte_blue + 1) === lastrow_canonindex) || ((richotte_blue + 1)===titan_
     semirichotte_myside_direction = getRandomItemFromArray(semirichotte_myside_image);
     semirichotte_myside.classList.add('semi_blue');
    semirichotte_myside.innerHTML=`<img src="${semirichotte_myside_direction}">`;
-}
+}*/
 }
 function semirichotte_red(){
 if((richotte_red - 1) !== firstrow_canonindex && (richotte_red - 1)!==titan_opponent && (richotte_red - 1)!==tankOpponentIndex && (richotte_red)%8!==0){
@@ -817,8 +881,27 @@ if((richotte_red + 1) === firstrow_canonindex || (richotte_red + 1)===titan_oppo
     semirichotte_red();
 }
 }
-let check_r=0;
-let check_b=0;
+if((Math.floor(semirichotte_redd/8)*8)===0){
+    semirichotte_bluee=semirichotte_redd+56;   
+}
+else if((Math.floor(semirichotte_redd/8)*8)===8){
+    semirichotte_bluee=semirichotte_redd+40;   
+}
+else if((Math.floor(semirichotte_redd/8)*8)===16){
+    semirichotte_bluee=semirichotte_redd+24;   
+}
+else if((Math.floor(semirichotte_redd/8)*8)===24){
+    semirichotte_bluee=semirichotte_redd+8;   
+}
+const semirichotte_opponent_image=['semi_richotte_red_left.png','semi_richotte_red_right.png'];
+semirichotte_myside=document.querySelector('.sq'+semirichotte_bluee);
+semirichotte_myside.classList.add('semi_blue');
+if(semirichotte_opponent_image[0]===semirichotte_opponent_direction){
+    semirichotte_myside.innerHTML=`<img src="semi_richotte_blue_left.png">`;   
+}
+else{
+    semirichotte_myside.innerHTML=`<img src="semi_richotte_blue_right.png">`; 
+}
 function semi_r(){
     if(!isPaused){
         showValidMoves(semirichotte_redd);
@@ -3436,6 +3519,7 @@ else{
                         bullet.remove();
                         isGameOver = true;
                         alert(`${currentPlayer} wins!`);
+                       
                        
                     } 
                     else 
